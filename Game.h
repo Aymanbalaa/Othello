@@ -6,12 +6,10 @@ public:
     Game(Player p1, Player p2);
     void printboard();
     void play();
-
     void countChar(char arr[8][8], int& countX, int& countO, int& countUnderscore);
 
 private:
     //  static const char X = 'X', O = 'O', SPACE = '_';
-
     char getCurrentPlayerSymbol();
 
 
