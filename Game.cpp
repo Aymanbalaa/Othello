@@ -38,10 +38,14 @@ void Game::play() {
         if (isValidMove(x, y, getCurrentPlayerSymbol())) {
 			// Make the move
 			board[x][y] = getCurrentPlayerSymbol();
+
+            flip(x, y, getCurrentPlayerSymbol());
+
+
 			// Check if the game is over
 			int countX, countO, countUnderscore;
 			countChar(board, countX, countO, countUnderscore);
-            if (countUnderscore == 0) {
+            if ((countUnderscore == 0)) {
 				won = true;
 			}
             else {
@@ -57,6 +61,7 @@ void Game::play() {
 
         printBoard(getCurrentPlayerSymbol());
 	}
+
 	// Print the winner
 	int countX, countO, countUnderscore;
 	countChar(board, countX, countO, countUnderscore);
@@ -85,6 +90,9 @@ void Game::printBoard(char currentPlayer) {
             }
         }
     }
+    //clear screen using system call
+    system("cls");
+    
 
     // Print the board
     cout << "    0   1   2   3   4   5   6   7" << endl; // column numbers
@@ -139,6 +147,40 @@ bool Game::isValidMove(int x, int y, char currentPlayer) {
 
 
 
+void Game::flip(int x, int y, char currentPlayer) {
+    char opponent = (currentPlayer == Position::BLACK) ? Position::WHITE : Position::BLACK;
+
+    // Check all eight directions from this position
+    const int dx[] = { -1, -1, -1, 0, 0, 1, 1 ,1 };
+    const int dy[] = { -1 ,0 ,1 ,-1 ,1 ,-1 ,0 ,1 };
+    for (int d = 0; d < 8; d++) {
+        int i = x + dx[d];
+        int j = y + dy[d];
+
+        bool foundOpponent = false;
+        while (i >= 0 && i < 8 && j >= 0 && j < 8) {
+            if (board[i][j] == opponent) {
+                foundOpponent = true;
+            }
+            else if ((board[i][j] == currentPlayer && foundOpponent)) {
+                // Flip the opponent's pieces in this direction
+                int ii = x + dx[d];
+                int jj = y + dy[d];
+                while (ii != i || jj != j) {
+                    board[ii][jj] = currentPlayer;
+                    ii += dx[d];
+                    jj += dy[d];
+                }
+                break;
+            }
+            else {
+                break;
+            }
+            i += dx[d];
+            j += dy[d];
+        }
+    }
+}
 
 
 
@@ -175,8 +217,7 @@ void Game::countChar(char arr[8][8],int& countBlack,int& countWhite,int& countEm
 /*
 
 void Game::play() {
-    // Do many turns
-    do {
+6  6 6    do {
         // Draw the board
         printboard();
         cout << "It is " << currentPlayer->getName() << "'s turn. You will place your sign " << getCurrentPlayerSymbol() << " by choosing a number from 0 to 7 for your i and j index " << endl;

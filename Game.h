@@ -10,6 +10,7 @@ public:
 
     bool isValidMove(int x, int y, char currentPlayer);
     void printBoard(char currentPlayer);
+    void flip(int x, int y, char currentPlayer);
 
 
 private:
