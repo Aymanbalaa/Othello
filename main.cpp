@@ -54,6 +54,8 @@ int main() {
           Player p2(s2);
           cout << "Okay " << s1 << " and " << s2; 
           cout << " ready to start ? (y/n)";
+
+
           loop:
           char yn;
           cin >> yn;
