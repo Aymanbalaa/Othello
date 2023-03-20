@@ -34,6 +34,15 @@ void Game::play() {
 		int x, y;
 		std::cout << "Player " << currentPlayer->getName() << ", enter your move (x y): ";
 		std::cin >> x >> y;
+
+        if ((x < 0) || (x > 7) || (y < 0) || (y > 7)) {
+            system("cls");
+            std::cout << "Invalid move ( out of bounds ) !\n";
+
+            printBoard(getCurrentPlayerSymbol());
+			continue;
+		}
+      
 		// Check if the move is valid
         if (isValidMove(x, y, getCurrentPlayerSymbol())) {
 			// Make the move
@@ -43,18 +52,22 @@ void Game::play() {
 
 
 			// Check if the game is over
-			int countX, countO, countUnderscore;
-			countChar(board, countX, countO, countUnderscore);
-            if ((countUnderscore == 0)) {
+			int countBlack, countWhite, countEmpty;
+			countChar(board, countBlack, countWhite, countEmpty);
+
+
+            if ((countEmpty == 0)) {
 				won = true;
 			}
             else {
 				// Switch players
 				currentPlayer = (currentPlayer == &first) ? &second : &first;
+                system("cls");
 			}
 		}
         else {
-			std::cout << "Invalid move!\n";
+            system ("cls");
+			std::cout << "Invalid move! (Chose one of the empty spaces ! ) \n";
 		}
 		// Print the board
 
@@ -91,7 +104,7 @@ void Game::printBoard(char currentPlayer) {
         }
     }
     //clear screen using system call
-    system("cls");
+    
     
 
     // Print the board
@@ -105,6 +118,12 @@ void Game::printBoard(char currentPlayer) {
         cout << "|" << endl;
         cout << "  +--------------------------------+" << endl; // horizontal line
     }
+    int countBlack, countWhite, countEmpty;
+    countChar(board, countBlack, countWhite, countEmpty);
+    cout << "Count Black = " << countBlack << endl;
+    cout << "Count White = " << countWhite << endl;
+    cout << "Count Empty = " << countEmpty << endl;
+
     
 }
 
@@ -193,6 +212,12 @@ void Game::flip(int x, int y, char currentPlayer) {
 
 void Game::countChar(char arr[8][8],int& countBlack,int& countWhite,int& countEmpty)
 {
+
+
+    countBlack = 0;
+    countWhite = 0;
+    countEmpty = 0;
+ 
     // Loop through the array and count the occurrences of each character
     for (int j = 0; j < 8; j++) {
         for (int i = 0; i < 8; i++) {
