@@ -8,6 +8,8 @@ public:
     void play();
     void countChar(char arr[8][8], int& countX, int& countO, int& countUnderscore);
 
+
+    bool hasValidMoves(char currentPlayer);
     bool isValidMove(int x, int y, char currentPlayer);
     void printBoard(char currentPlayer);
     void flip(int x, int y, char currentPlayer);

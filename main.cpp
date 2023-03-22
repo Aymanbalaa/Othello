@@ -38,43 +38,39 @@ int main() {
         //starts a new game
         case 1 :  
         { system("CLS");
-          string s1;
-          string s2;
-          //Get players name
+        string s1;
+        string s2;
+        //Get players name
 
-          
-          
-          cout << "What is the name of player 1 ?" << endl << "";
+        cout << "What is the name of player 1 ?" << endl << "";
 
-          cin >> s1;
-          Player p1(s1);
+        cin >> s1;
+        Player p1(s1);
 
-          cout << "What is the name of player 2 ?" << endl << "";
-          cin >> s2;
-          Player p2(s2);
-          cout << "Okay " << s1 << " and " << s2; 
-          cout << " ready to start ? (y/n)";
+        cout << "What is the name of player 2 ?" << endl << "";
+        cin >> s2;
+        Player p2(s2);
+        cout << "Okay " << s1 << " and " << s2;
+        cout << " ready to start ? (y/n)";
 
+        char yn;
+        while (true) {
+            cin >> yn;
 
-          loop:
-          char yn;
-          cin >> yn;
+            if (yn == 'y') {
+                break;
+            }
+            else {
+                cout << "okay then , type y when you are";
+            }
+        }
 
-          if (yn == 'y')
-          {
-              goto start;
-          }
-          else {
-              cout << "okay then , type y when you are";
-              goto loop;
-          }
+        system("CLS");
 
-          start :
-          system("CLS");
-
-          Game game1(p1, p2);
-          game1.play();
-
+        Game game1(p1, p2);
+        game1.play();
+        getchar();
+        break;
         }
 
         //loads old game
@@ -100,8 +96,7 @@ int main() {
         
 
 
-        system("CLS");
-        return 0;
+        
     
 
 }

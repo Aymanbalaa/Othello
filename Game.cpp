@@ -24,69 +24,76 @@ Game::Game(Player p1, Player p2) : first(p1), second(p2) {
     board[3][4] = board[4][3] = Position::BLACK;
 }
 
-
 void Game::play() {
-	// Print the board
-	printBoard(getCurrentPlayerSymbol());
-	// Play the game
+    // Print the board
+    printBoard(getCurrentPlayerSymbol());
+    // Play the game
     while (!won) {
-		// Get the current player's move
-		int x, y;
-		std::cout << "Player " << currentPlayer->getName() << ", enter your move (x y): ";
-		std::cin >> x >> y;
-
-        if ((x < 0) || (x > 7) || (y < 0) || (y > 7)) {
-            system("cls");
-            std::cout << "Invalid move ( out of bounds ) !\n";
-
-            printBoard(getCurrentPlayerSymbol());
-			continue;
-		}
-      
-		// Check if the move is valid
-        if (isValidMove(x, y, getCurrentPlayerSymbol())) {
-			// Make the move
-			board[x][y] = getCurrentPlayerSymbol();
-
-            flip(x, y, getCurrentPlayerSymbol());
-
-
-			// Check if the game is over
-			int countBlack, countWhite, countEmpty;
-			countChar(board, countBlack, countWhite, countEmpty);
-
-
-            if ((countEmpty == 0)) {
-				won = true;
-			}
+        // Check if the current player has any valid moves
+        if (hasValidMoves(getCurrentPlayerSymbol())) {
+            // Get the current player's move
+            int x, y;
+            std::cout << "Player " << currentPlayer->getName() << ", enter your move (x y): ";
+            std::cin >> x >> y;
+            // Check if the move is valid
+            if (isValidMove(x, y, getCurrentPlayerSymbol())) {
+                // Make the move
+                board[x][y] = getCurrentPlayerSymbol();
+                flip(x, y, getCurrentPlayerSymbol());
+                // Check if the game is over
+                int countBlack, countWhite, countEmpty;
+                countChar(board, countBlack, countWhite, countEmpty);
+                if ((countEmpty == 0 )) {
+                    won = true;
+                }
+                else {
+                    // Switch players
+                    system("cls");
+                    currentPlayer = (currentPlayer == &first) ? &second : &first;
+                }
+            }
             else {
-				// Switch players
-				currentPlayer = (currentPlayer == &first) ? &second : &first;
                 system("cls");
-			}
-		}
+                std::cout << "Invalid move!\n";
+            }
+        }
         else {
-            system ("cls");
-			std::cout << "Invalid move! (Chose one of the empty spaces ! ) \n";
-		}
-		// Print the board
+
+            int numb = 0;
+            do {
+                system("cls");
+                std::cout << "No valid moves available. Skipping turn.\n";
+                // Switch players
+                currentPlayer = (currentPlayer == &first) ? &second : &first;
+                
+                numb++;
+            } while (numb < 1);
 
 
+
+
+        }
+        // Print the board
         printBoard(getCurrentPlayerSymbol());
-	}
+    }
 
-	// Print the winner
-	int countX, countO, countUnderscore;
-	countChar(board, countX, countO, countUnderscore);
+    // Print the winner
+    int countX, countO, countUnderscore;
+    countChar(board, countX, countO, countUnderscore);
     if (countX > countO) {
-		std::cout << "Player " << first.getName() << " wins!\n";
-	}
+        std::cout << "Player " << first.getName() << " wins!\n";
+        getchar();
+    }
     else if (countO > countX) {
-		std::cout << "Player " << second.getName() << " wins!\n";
-	}
+        std::cout << "Player " << second.getName() << " wins!\n";
+        getchar();
+    }
     else {
-		std::cout << "It's a tie!\n";
-	}
+        std::cout << "It's a tie!\n";
+        getchar();
+    }
+
+
 }
 
 //has to be implmeneted as drawBoard in Board class
@@ -228,7 +235,8 @@ void Game::countChar(char arr[8][8],int& countBlack,int& countWhite,int& countEm
             else if (arr[i][j] == Position::WHITE) {
                 countWhite++;
             }
-            else if (arr[i][j] == Position::UNPLAYABLE) {
+            else if (arr[i][j] == ((Position::EMPTY) )||(Position::UNPLAYABLE))
+            {
                 countEmpty++;
             }
         }
@@ -236,135 +244,26 @@ void Game::countChar(char arr[8][8],int& countBlack,int& countWhite,int& countEm
 }
 
 
-//game mechanics
-//might implement exception handling for out of range,weird charachters and occupied position (so far seems uselss)
-
-/*
-
-void Game::play() {
-6  6 6    do {
-        // Draw the board
-        printboard();
-        cout << "It is " << currentPlayer->getName() << "'s turn. You will place your sign " << getCurrentPlayerSymbol() << " by choosing a number from 0 to 7 for your i and j index " << endl;
-
-        // Get an i index and j index from the player
-        int i, j;
-        cout << "Choose i: ";
-        cin >> i;
-        cout << "Choose j: ";
-        cin >> j;
-        cout << endl;
-        system("CLS");
-
-        // Confirm the play is on the board
-        if ((i < 0 || i > 7) || (j < 0 || j > 7)) {
-            cout << "Invalid range, please pick a position between 0 and 7, inclusive, for both i and j." << endl;
-            continue;
-        }
-        // Confirm the play is empty
-        if ((board[i][j]) != Position::UNPLAYABLE) {
-            cout << "Position " << "i = " << i << " j = " << j << " is already occupied!" << endl;
-            continue;
-        }
-
-        // Place the current player's symbol on the board
-        (board[i][j]) = getCurrentPlayerSymbol();
-
-
-       //find the pieces that are unplyable because they do not flip any pieces in othello game and output them
-        for (int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
-                if (board[i][j] == Position::UNPLAYABLE) {
-					cout << "Position " << "i = " << i << " j = " << j << " is empty!" << endl;
-				}
-			}
-		}
-        
-
-
-
-
-
-
-        // Check if any pieces need to be flipped
-       bool flipped = false;
-        for (int di = -1; di <= 1; di++) {
-            for (int dj = -1; dj <= 1; dj++) {
-                if (di == 0 && dj == 0) {
-                    continue;  // Skip this iteration, as it corresponds to the current position
-                }
-                int ni = i + di;  // Position to check in the i direction
-                int nj = j + dj;  // Position to check in the j direction
-                bool foundOpponent = false;  // Tracks whether an opponent's symbol was found in this direction
-                while (ni >= 0 && ni < 8 && nj >= 0 && nj < 8) {
-                    if (board[ni][nj] == Position::UNPLAYABLE) {
-                        break;  // Reached the edge of the board or an empty position, so stop checking in this direction
-                    }
-                    if (board[ni][nj] == getCurrentPlayerSymbol()) {
-                        if (foundOpponent) {
-                            // Flip the pieces between the current position and the last position where an opponent's symbol was found
-                            int ci = i;
-                            int cj = j;
-                            while (ci != ni || cj != nj) {
-                                (board[ci][cj]) = getCurrentPlayerSymbol();
-                                ci -= di;
-                                cj -= dj;
-                            }
-                            flipped = true;
-                        }
-                        break;  // Reached a position with the current player's symbol, so stop checking in this direction
-                    }
-                    foundOpponent = true;  // Found an opponent's symbol in this direction
-                    ni += di;
-                    nj += dj;
-                }
+bool Game::hasValidMoves(char currentPlayer) {
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+            if (isValidMove(x, y, currentPlayer)) {
+                return true;
             }
         }
-
-        // If no pieces were flipped, it is not a valid move
-        if (!flipped) {
-            cout << "Invalid move. No pieces were flipped." << endl;
-            (board[i][j]) = Position::UNPLAYABLE;  // Remove the current player's symbol from the board
-            continue;
-        }
-
-        
-
-        moreMoves = false;
-        for (int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
-                moreMoves |= (board[i][j] == Position::UNPLAYABLE);
-            }
-        }
-
-
-
-            //switches turn and displays count
-        if (!won) {
-                if (currentPlayer == &first) currentPlayer = &second;
-                else currentPlayer = &first;
-
-                int countBlack = 0; int countWhite = 0; int countEmpty = 0;
-                countChar(board, countBlack, countWhite, countEmpty);
-                cout << "Count X : " << countBlack << "  Count O : " << countWhite << "  Count - : " << countEmpty << endl << endl;
-
-                //  system("CLS");
-            }
-            
-     } while (!won && moreMoves);
-
-    //Draw the final board
-    printboard();
-
-    //Declare winner, if someone won
-    if (won) {
-        cout << currentPlayer->getName() << " won!" << endl;
-    } // Declare Tie if nobody won
-    else if (!moreMoves) cout << "Tie Game!" << endl;
-
-
+    }
+    return false;
 }
-*/
+
+
+
+
+
+
+
+
+
+
 
 // used to get which player is playing and print that char
 //it will rreturn either B or W
