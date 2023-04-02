@@ -7,15 +7,12 @@
 #include "Position.h"
 #include "Player.h"
 #include <fstream>
-
 #include <iostream>
-
 using namespace std;
 
 void writeArrayToFile(char arr[8][8], string filename) {
     ofstream file(filename);
 
-   
     for (int j = 0; j < 8; j++) {
         for (int i= 0; i< 8; i++) {
             file << arr[i][j];
@@ -27,7 +24,6 @@ void writeArrayToFile(char arr[8][8], string filename) {
 
 void readArrayFromFile(char arr[8][8], string filename) {
     ifstream file(filename);
-
 
     for (int j = 0; j < 8; j++) {
         for (int i = 0; i < 8; i++) {
@@ -42,13 +38,10 @@ void Game::Load()
     readArrayFromFile(board, "file.txt");
 
 }
-
-
 //constructor 
 // I initiliased the default starting position but we will be changing it later on
 
 Game::Game(Player p1, Player p2) : first(p1), second(p2) {
-    
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
@@ -61,8 +54,6 @@ Game::Game(Player p1, Player p2) : first(p1), second(p2) {
 }
 
 Game::Game(Player p1, Player p2,int starting) : first(p1), second(p2) {
-
-
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
 
@@ -108,8 +99,6 @@ Game::Game(Player p1, Player p2,int starting) : first(p1), second(p2) {
 }
 }
 
-
-
 void Game::play() {
     // Print the board
     printBoard(getCurrentPlayerSymbol());
@@ -134,9 +123,7 @@ void Game::play() {
                     won = true;
                 }
                 else {
-                    // Switch players
-
-
+                    // Switch player
                     system("cls");
                     currentPlayer = (currentPlayer == &first) ? &second : &first;
                 }
@@ -147,24 +134,17 @@ void Game::play() {
             }
         }
         else {
-
             int numb = 0;
             do {
                 system("cls");
                 std::cout << "No valid moves available. Skipping turn.\n";
                 // Switch players
                 currentPlayer = (currentPlayer == &first) ? &second : &first;
-                
                 numb++;
             } while (numb < 1);
-
-
-
-
         }
         // Print the board
         printBoard(getCurrentPlayerSymbol());
-
 
         std::cout << "save game ? (y/n)";
         char savedec;
@@ -173,7 +153,6 @@ void Game::play() {
         if (savedec == 'y') {
             writeArrayToFile(board, "file.txt");
             return;
-
         }
         system("cls");
         printBoard(getCurrentPlayerSymbol());
@@ -225,11 +204,8 @@ void Game::printBoard(char currentPlayer) {
     countChar(board, countBlack, countWhite, countEmpty);
     cout << "Count Black = " << countBlack << endl;
     cout << "Count White = " << countWhite << endl;
-    cout << "Count Empty = " << countEmpty << endl;
-
-    
+    cout << "Count Empty = " << countEmpty << endl; 
 }
-
 
 bool Game::isValidMove(int x, int y, char currentPlayer) {
     // Check if the position is already occupied
@@ -259,10 +235,8 @@ bool Game::isValidMove(int x, int y, char currentPlayer) {
             j += dy[d];
         }
     }
-
     return false;
 }
-
 
 void Game::flip(int x, int y, char currentPlayer) {
     char opponent = (currentPlayer == Position::BLACK) ? Position::WHITE : Position::BLACK;
@@ -303,8 +277,6 @@ void Game::flip(int x, int y, char currentPlayer) {
 
 void Game::countChar(char arr[8][8],int& countBlack,int& countWhite,int& countEmpty)
 {
-
-
     countBlack = 0;
     countWhite = 0;
     countEmpty = 0;
@@ -326,7 +298,6 @@ void Game::countChar(char arr[8][8],int& countBlack,int& countWhite,int& countEm
         }
     }
 }
-
 
 bool Game::hasValidMoves(char currentPlayer) {
     for (int x = 0; x < 8; x++) {
