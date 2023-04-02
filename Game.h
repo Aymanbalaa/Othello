@@ -4,6 +4,7 @@ class Game
 {
 public:
     Game(Player p1, Player p2);
+    Game(Player p1, Player p2,int starting);
     void printboard();
     void play();
     void countChar(char arr[8][8], int& countX, int& countO, int& countUnderscore);
@@ -13,6 +14,11 @@ public:
     bool isValidMove(int x, int y, char currentPlayer);
     void printBoard(char currentPlayer);
     void flip(int x, int y, char currentPlayer);
+
+    void Load();
+
+
+
 
 
 private:
@@ -34,5 +40,7 @@ private:
     Player first, second;
     Player* currentPlayer = &first;
     bool won = false, moreMoves = true;
+
+   
 };
 

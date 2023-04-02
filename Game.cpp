@@ -5,8 +5,44 @@
 #include "Game.h"
 #include "Board.h"
 #include "Position.h"
+#include "Player.h"
+#include <fstream>
+
+#include <iostream>
 
 using namespace std;
+
+void writeArrayToFile(char arr[8][8], string filename) {
+    ofstream file(filename);
+
+   
+    for (int j = 0; j < 8; j++) {
+        for (int i= 0; i< 8; i++) {
+            file << arr[i][j];
+        }
+        file << endl;
+    }
+    file.close();
+}
+
+void readArrayFromFile(char arr[8][8], string filename) {
+    ifstream file(filename);
+
+
+    for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < 8; i++) {
+            file >> arr[i][j];
+        }
+    }
+    file.close();
+}
+
+void Game::Load()
+{
+    readArrayFromFile(board, "file.txt");
+
+}
+
 
 //constructor 
 // I initiliased the default starting position but we will be changing it later on
@@ -23,6 +59,56 @@ Game::Game(Player p1, Player p2) : first(p1), second(p2) {
     board[4][4] = board[3][3] = Position::WHITE;
     board[3][4] = board[4][3] = Position::BLACK;
 }
+
+Game::Game(Player p1, Player p2,int starting) : first(p1), second(p2) {
+
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+
+            board[i][j] = Position::UNPLAYABLE;
+        }
+    }
+    switch (starting) {
+        case 1 :   
+        {
+            board[4][4] = board[3][3] = Position::WHITE;
+            board[3][4] = board[4][3] = Position::BLACK;
+            break;
+        }
+
+        case 2:
+        {
+            board[2][2] = board[3][3] = Position::WHITE;
+            board[3][2] = board[2][3] = Position::BLACK;
+            break;
+        }
+
+        case 3:
+        {
+            board[4][2] = board[5][3] = Position::WHITE;
+            board[5][2] = board[4][3] = Position::BLACK;
+            break;
+        }
+
+        case 4:
+        {
+            board[2][4] = board[3][5] = Position::WHITE;
+            board[2][5] = board[4][3] = Position::BLACK;
+            break;
+        }
+
+        case 5:
+        {
+            board[4][4] = board[5][5] = Position::WHITE;
+            board[4][5] = board[5][4] = Position::BLACK;
+            break;
+        }
+
+}
+}
+
+
 
 void Game::play() {
     // Print the board
@@ -43,11 +129,14 @@ void Game::play() {
                 // Check if the game is over
                 int countBlack, countWhite, countEmpty;
                 countChar(board, countBlack, countWhite, countEmpty);
+
                 if ((countEmpty == 0 )) {
                     won = true;
                 }
                 else {
                     // Switch players
+
+
                     system("cls");
                     currentPlayer = (currentPlayer == &first) ? &second : &first;
                 }
@@ -75,8 +164,20 @@ void Game::play() {
         }
         // Print the board
         printBoard(getCurrentPlayerSymbol());
-    }
 
+
+        std::cout << "save game ? (y/n)";
+        char savedec;
+        cin >> savedec;
+
+        if (savedec == 'y') {
+            writeArrayToFile(board, "file.txt");
+            return;
+
+        }
+        system("cls");
+        printBoard(getCurrentPlayerSymbol());
+    }
     // Print the winner
     int countX, countO, countUnderscore;
     countChar(board, countX, countO, countUnderscore);
@@ -92,10 +193,7 @@ void Game::play() {
         std::cout << "It's a tie!\n";
         getchar();
     }
-
-
 }
-
 //has to be implmeneted as drawBoard in Board class
 
 void Game::printBoard(char currentPlayer) {
@@ -111,8 +209,6 @@ void Game::printBoard(char currentPlayer) {
         }
     }
     //clear screen using system call
-    
-    
 
     // Print the board
     cout << "    0   1   2   3   4   5   6   7" << endl; // column numbers
@@ -168,11 +264,6 @@ bool Game::isValidMove(int x, int y, char currentPlayer) {
 }
 
 
-
-
-
-
-
 void Game::flip(int x, int y, char currentPlayer) {
     char opponent = (currentPlayer == Position::BLACK) ? Position::WHITE : Position::BLACK;
 
@@ -207,13 +298,6 @@ void Game::flip(int x, int y, char currentPlayer) {
         }
     }
 }
-
-
-
-
-
-
-
 
 // helps count score will later be outputted
 
@@ -254,16 +338,6 @@ bool Game::hasValidMoves(char currentPlayer) {
     }
     return false;
 }
-
-
-
-
-
-
-
-
-
-
 
 // used to get which player is playing and print that char
 //it will rreturn either B or W

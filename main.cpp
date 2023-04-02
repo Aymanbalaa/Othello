@@ -50,7 +50,16 @@ int main() {
         cout << "What is the name of player 2 ?" << endl << "";
         cin >> s2;
         Player p2(s2);
-        cout << "Okay " << s1 << " and " << s2;
+        cout << "Okay " << s1 << " and " << s2 <<endl;
+
+        cout << "what starting position would you like?" << endl;
+        cout << "1-default"<<endl;
+        cout << "2-5 are different offset non standard"<<endl;
+
+        int starting;
+        cin >> starting;
+        Game Game1(p1, p2, starting);
+
         cout << " ready to start ? (y/n)";
 
         char yn;
@@ -66,9 +75,10 @@ int main() {
         }
 
         system("CLS");
+        
+        Game1.play();
+    
 
-        Game game1(p1, p2);
-        game1.play();
         getchar();
         break;
         }
@@ -77,7 +87,12 @@ int main() {
         case 2 :
         {
             system("CLS");
-            cout << "get rekt bozo baad ma 3melt shi hon";
+            Player p1("ayman");
+            Player p2("geoorge");
+            Game game2(p1, p2);
+            game2.Load();
+            game2.play();
+
         }
 
         //stops program
