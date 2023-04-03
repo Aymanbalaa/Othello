@@ -15,35 +15,19 @@ public:
     void printBoard(char currentPlayer);
     void flip(int x, int y, char currentPlayer);
 
-    void Load();
-  
-    Player first, second;
-    Player* currentPlayer = &first;
-
-
+    void Load();  
 
 
 private:
     //  static const char X = 'X', O = 'O', SPACE = '_';
     char getCurrentPlayerSymbol();
-
-
     void save();
-
-    //Set up board like this:
-    //{.,.,.,
-    // .,.,.,
-    // .,.,.}
-
-    //00 01 02
-    //03 04 05
-    //06 07 08
     char board[8][8];
-
-
-
     bool won = false, moreMoves = true;
 
-   
+    Player first, second;
+    Player* currentPlayer = &first;
+
+    
 };
 

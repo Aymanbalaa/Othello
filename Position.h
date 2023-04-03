@@ -7,7 +7,7 @@ public:
 	static const char EMPTY = '-';
 	static const char UNPLAYABLE = '*';
 
-	virtual bool canPlay() = 0; //polymorphism pure virtual
+	
 
 	virtual Position& move() = 0;
 	virtual Position& makeMove(char m) = 0;

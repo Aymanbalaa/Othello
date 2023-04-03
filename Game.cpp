@@ -53,7 +53,7 @@ void Game::Load()
     file.close();
 
 }
-
+//constructor for loading game purposes only
 Game::Game(Player p1, Player p2) : first(p1), second(p2) {
 
     for (int i = 0; i < 8; i++) {
@@ -64,7 +64,7 @@ Game::Game(Player p1, Player p2) : first(p1), second(p2) {
     }
 
 }
-
+//constructor for new games
 Game::Game(Player p1, Player p2,int starting) : first(p1), second(p2) {
    
      board[0][4] = Position::UNPLAYABLE;
@@ -114,14 +114,14 @@ Game::Game(Player p1, Player p2,int starting) : first(p1), second(p2) {
 
 }
 }
-
+//our play function
 void Game::play() {
     // Print the board
     printBoard(getCurrentPlayerSymbol());
     // Play the game
     while (!won) {
         // Check if the current player has any valid moves
-        if (hasValidMoves(getCurrentPlayerSymbol())) {
+      nextmove:  if (hasValidMoves(getCurrentPlayerSymbol())) {
             // Get the current player's move
             int x, y;
             std::cout << "Player " << currentPlayer->getName() << ", Enter Your Move (x y): ";
@@ -134,8 +134,8 @@ void Game::play() {
                 // Check if the game is over
                 int countBlack, countWhite, countEmpty;
                 countChar(board, countBlack, countWhite, countEmpty);
-
-                if ((countEmpty == 2 )) {
+                // we have two spaces that caant be changed when they are the only spaces left,game ends
+                if ((countEmpty == 2)) {
                     won = true;
                 }
                 else {
@@ -152,6 +152,7 @@ void Game::play() {
         else {
             int numb = 0;
             do {
+                //if there are no available moves it will skip to the other player
                 system("cls");
                 std::cout << "No Valid Moves Available. Skipping Turn.\n";
                 // Switch players
@@ -161,35 +162,64 @@ void Game::play() {
         }
         // Print the board
         printBoard(getCurrentPlayerSymbol());
+        //setting up the menu after each move
+        int continuation;
+        std::cout << "What Would You Like To Do ?" << endl << "1- Concede Game" << endl << "2- Save Game" << endl << "3-Play Next Move";
+        std::cin >> continuation;
 
-        std::cout << "Save game ? (y/n)" <<endl<<"Saying Yes Will Terminate Your Console";
-        char savedec;
-        cin >> savedec;
-
-        if (savedec == 'y') {
-           save();
-            return;
+        switch (continuation)
+        {
+        case 1:
+        {   //concede game
+            
+            won = true;
+            break;
         }
+
+
+
+        case 2:
+        {
+            save();
+            return;
+            
+        }
+        case 3:
+        {
+            system("cls");
+            printBoard(getCurrentPlayerSymbol());
+            goto nextmove; }
+        }
+        /*  //saving mechanism
+          std::cout << "Save game ? (y/n)" <<endl<<"Saying Yes Will Terminate Your Console";
+          char savedec;
+          cin >> savedec;
+
+          if (savedec == 'y') {
+             save();
+              return;
+          }
+          */
         system("cls");
         printBoard(getCurrentPlayerSymbol());
+        }
+        // Print the winner when game is done
+        int countX, countO, countUnderscore;
+        countChar(board, countX, countO, countUnderscore);
+        if (countX > countO) {
+            std::cout << "Player " << first.getName() << " Wins!\n";
+            getchar();
+        }
+        else if (countO > countX) {
+            std::cout << "Player " << second.getName() << " Wins!\n";
+            getchar();
+        }
+        else {
+            std::cout << "It's A Tie!\n";
+            getchar();
+        }
     }
-    // Print the winner
-    int countX, countO, countUnderscore;
-    countChar(board, countX, countO, countUnderscore);
-    if (countX > countO) {
-        std::cout << "Player " << first.getName() << " Wins!\n";
-        getchar();
-    }
-    else if (countO > countX) {
-        std::cout << "Player " << second.getName() << " Wins!\n";
-        getchar();
-    }
-    else {
-        std::cout << "It's A Tie!\n";
-        getchar();
-    }
-}
-//has to be implmeneted as drawBoard in Board class
+
 
 void Game::printBoard(char currentPlayer) {
     // Calculate valid moves for the current player
@@ -203,9 +233,9 @@ void Game::printBoard(char currentPlayer) {
             }
         }
     }
-    //clear screen using system call
+ 
 
-    // Print the board
+    // Print the board 
     cout << "    0   1   2   3   4   5   6   7" << endl; // column numbers
     cout << "  +--------------------------------+" << endl; // horizontal line
     for (int y = 0; y < 8; y++) { // A line
@@ -216,6 +246,8 @@ void Game::printBoard(char currentPlayer) {
         cout << "|" << endl;
         cout << "  +--------------------------------+" << endl; // horizontal line
     }
+
+    //shows score status so far
     int countBlack, countWhite, countEmpty;
     countChar(board, countBlack, countWhite, countEmpty);
     cout << "Count Black = " << countBlack << endl;
