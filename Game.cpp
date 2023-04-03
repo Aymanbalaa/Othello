@@ -3,43 +3,56 @@
 #include <cstdlib>
 #include <time.h>
 #include "Game.h"
+
 #include "Board.h"
 #include "Position.h"
 #include "Player.h"
 #include <fstream>
 #include <iostream>
+
 using namespace std;
 
-void writeArrayToFile(char arr[8][8], string filename) {
-    ofstream file(filename);
+// copies the 2d array to the textfile
+void Game::save() {
+    ofstream file("file.txt");
+    file << first.getName() << endl;
+    file << second.getName() << endl;
+    file <<currentPlayer->getName() << endl;
 
     for (int j = 0; j < 8; j++) {
         for (int i= 0; i< 8; i++) {
-            file << arr[i][j];
+            file << Game::board[i][j];
         }
         file << endl;
     }
     file.close();
 }
 
-void readArrayFromFile(char arr[8][8], string filename) {
-    ifstream file(filename);
+//loads the 2d array with the board from the text file
+void Game::Load()
+{
+    ifstream file("file.txt");
+    std::string name1;
+    std::string name2;
+    std::string namecurrent;
+
+    file >> name1;
+    file >> name2;
+    file >> namecurrent;
+
+    first.setName(name1);
+    second.setName(name2);
+    currentPlayer->setName(namecurrent);
+
 
     for (int j = 0; j < 8; j++) {
         for (int i = 0; i < 8; i++) {
-            file >> arr[i][j];
+            file >> board[i][j];
         }
     }
     file.close();
-}
-
-void Game::Load()
-{
-    readArrayFromFile(board, "file.txt");
 
 }
-//constructor 
-// I initiliased the default starting position but we will be changing it later on
 
 Game::Game(Player p1, Player p2) : first(p1), second(p2) {
 
@@ -49,11 +62,14 @@ Game::Game(Player p1, Player p2) : first(p1), second(p2) {
             board[i][j] = Position::UNPLAYABLE;
         }
     }
-    board[4][4] = board[3][3] = Position::WHITE;
-    board[3][4] = board[4][3] = Position::BLACK;
+
 }
 
 Game::Game(Player p1, Player p2,int starting) : first(p1), second(p2) {
+   
+     board[0][4] = Position::UNPLAYABLE;
+     board[0][3] = Position::UNPLAYABLE;
+
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
 
@@ -108,7 +124,7 @@ void Game::play() {
         if (hasValidMoves(getCurrentPlayerSymbol())) {
             // Get the current player's move
             int x, y;
-            std::cout << "Player " << currentPlayer->getName() << ", enter your move (x y): ";
+            std::cout << "Player " << currentPlayer->getName() << ", Enter Your Move (x y): ";
             std::cin >> x >> y;
             // Check if the move is valid
             if (isValidMove(x, y, getCurrentPlayerSymbol())) {
@@ -119,7 +135,7 @@ void Game::play() {
                 int countBlack, countWhite, countEmpty;
                 countChar(board, countBlack, countWhite, countEmpty);
 
-                if ((countEmpty == 0 )) {
+                if ((countEmpty == 2 )) {
                     won = true;
                 }
                 else {
@@ -137,7 +153,7 @@ void Game::play() {
             int numb = 0;
             do {
                 system("cls");
-                std::cout << "No valid moves available. Skipping turn.\n";
+                std::cout << "No Valid Moves Available. Skipping Turn.\n";
                 // Switch players
                 currentPlayer = (currentPlayer == &first) ? &second : &first;
                 numb++;
@@ -146,12 +162,12 @@ void Game::play() {
         // Print the board
         printBoard(getCurrentPlayerSymbol());
 
-        std::cout << "save game ? (y/n)";
+        std::cout << "Save game ? (y/n)" <<endl<<"Saying Yes Will Terminate Your Console";
         char savedec;
         cin >> savedec;
 
         if (savedec == 'y') {
-            writeArrayToFile(board, "file.txt");
+           save();
             return;
         }
         system("cls");
@@ -161,15 +177,15 @@ void Game::play() {
     int countX, countO, countUnderscore;
     countChar(board, countX, countO, countUnderscore);
     if (countX > countO) {
-        std::cout << "Player " << first.getName() << " wins!\n";
+        std::cout << "Player " << first.getName() << " Wins!\n";
         getchar();
     }
     else if (countO > countX) {
-        std::cout << "Player " << second.getName() << " wins!\n";
+        std::cout << "Player " << second.getName() << " Wins!\n";
         getchar();
     }
     else {
-        std::cout << "It's a tie!\n";
+        std::cout << "It's A Tie!\n";
         getchar();
     }
 }
@@ -208,6 +224,11 @@ void Game::printBoard(char currentPlayer) {
 }
 
 bool Game::isValidMove(int x, int y, char currentPlayer) {
+    if ((x == 0) && ((y == 3) || (y == 4)))
+    {
+        return false;
+    }
+
     // Check if the position is already occupied
     if (board[x][y] != Position::EMPTY && board[x][y] != Position::UNPLAYABLE) return false;
 

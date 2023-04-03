@@ -16,7 +16,9 @@ public:
     void flip(int x, int y, char currentPlayer);
 
     void Load();
-
+  
+    Player first, second;
+    Player* currentPlayer = &first;
 
 
 
@@ -25,6 +27,8 @@ private:
     //  static const char X = 'X', O = 'O', SPACE = '_';
     char getCurrentPlayerSymbol();
 
+
+    void save();
 
     //Set up board like this:
     //{.,.,.,
@@ -37,8 +41,7 @@ private:
     char board[8][8];
 
 
-    Player first, second;
-    Player* currentPlayer = &first;
+
     bool won = false, moreMoves = true;
 
    

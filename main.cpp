@@ -6,117 +6,103 @@
 #include <iomanip>
 using namespace std;
 int main() {
+    //DISPLAYS OTHELLO LOGO
 
-        string line;
-        ifstream myfile("Menu.txt");
-        cout << setw(25);
-        if (myfile.is_open())
-        {
-            while (getline(myfile, line))
-            {
-                cout << setw(25);
-                cout << line << '\n';
-            }
-            myfile.close();
+    string line;
+    ifstream myfile("Menu.txt");
+
+    if (myfile.is_open()) {
+        while (getline(myfile, line)) {
+            cout << line << '\n';
         }
-
-        else cout << "Unable to open file";
-
-        // menu options
-
-        menu :
-        cout << "Chose one option from the following list by entering it's number (1-2-3)";
-        cout << endl << "1 - New Game " << endl << "2 - Load Game" << endl << "3 - Quit" <<endl<<endl;
-
+        myfile.close();
+    }
+    else {
+        cout << "Unable to open file";
+    }
+    // MENU OPTIONS
+    bool validInput = false;
+    while (!validInput) {
+        cout << "Choose an option (1-2-3): ";
+        cout << endl << "1 - New Game " << endl << "2 - Load Game" << endl << "3 - Quit" << endl << endl;
         int decision;
         cin >> decision;
 
-        switch (decision)
-        {
+        switch (decision) {
 
-
-        //starts a new game
-        case 1 :  
-        { system("CLS");
-        string s1;
-        string s2;
-        //Get players name
-
-        cout << "What is the name of player 1 ?" << endl << "";
-
-        cin >> s1;
-        Player p1(s1);
-
-        cout << "What is the name of player 2 ?" << endl << "";
-        cin >> s2;
-        Player p2(s2);
-        cout << "Okay " << s1 << " and " << s2 <<endl;
-
-        cout << "what starting position would you like?" << endl;
-        cout << "1-default"<<endl;
-        cout << "2-5 are different offset non standard"<<endl;
-
-        int starting;
-        cin >> starting;
-        Game Game1(p1, p2, starting);
-
-        cout << " ready to start ? (y/n)";
-
-        char yn;
-        while (true) {
-            cin >> yn;
-
-            if (yn == 'y') {
-                break;
-            }
-            else {
-                cout << "okay then , type y when you are";
-            }
-        }
-
-        system("CLS");
-        
-        Game1.play();
-    
-
-        getchar();
-        break;
-        }
-
-        //loads old game
-        case 2 :
-        {
+        // NEW GAME
+        case 1: {
             system("CLS");
-            Player p1("ayman");
-            Player p2("geoorge");
+            string s1;
+            string s2;
+
+            cout << "What is the name of Player 1?" << endl << "";
+            cin >> s1;
+            Player p1(s1);
+
+            cout << "What is the name of Player 2?" << endl << "";
+            cin >> s2;
+            Player p2(s2);
+
+            cout << "Okay " << s1 << " and " << s2 << endl;
+
+            cout << "What starting position would you like?" << endl;
+            cout << "1 - Default" << endl;
+            cout << "2 - 5 are different offset non-standard" << endl;
+
+            int starting;
+            cin >> starting;
+
+            Game Game1(p1, p2, starting);
+
+            cout << "Ready to start? (y/n)";
+
+            char yn;
+            while (true) {
+                cin >> yn;
+
+                if (yn == 'y') {
+                    break;
+                }
+                else {
+                    cout << "Okay then, type y when you are";
+                }
+            }
+
+            system("CLS");
+            Game1.play();
+            getchar();
+            validInput = true;
+            break;
+        }
+        
+        //LOAD GAME
+        case 2: {
+            system("CLS");
+            Player p1("First");
+            Player p2("Second");
             Game game2(p1, p2);
             game2.Load();
             game2.play();
-
+            validInput = true;
+            break;
         }
 
-        //stops program
-        case 3 : 
-        { return 0;
+        //EXIT
+        case 3: {
+            return 0;
         }
-        //no correspondance
-        default :
-        {   system("CLS");
-            cout << "The Number you entered does not correspond to one of the options !";
+        default: {
+            system("CLS");
+            cout << "The number you entered does not correspond to one of the options!" << endl;
             cout << endl;
-            goto menu;
+            break;
         }
-        } // swicth statement end
+        } // switch statement end
+    } // while loop end
 
-        
-
-
-        
-    
-
+    return 0;
 }
-
-
 
 
 

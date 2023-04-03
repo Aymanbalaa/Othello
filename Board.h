@@ -6,7 +6,7 @@ class Board
 {
 public :   
 
-	//void takeTurn(Player);
+	
 
 
 
